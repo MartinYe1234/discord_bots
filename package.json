@@ -1,0 +1,8 @@
+{
+"name":"image_search_bot",
+"version":"1.0.0",
+"description": "searches the web for images with similar tags",
+"main":"bot.js",
+"author":"Hang Xin(Martin)",
+"dependencies": {}
+}
