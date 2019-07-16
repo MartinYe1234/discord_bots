@@ -4,8 +4,5 @@
   "description": "searches the web for images with similar tags",
   "main": "bot.js",
   "author": "Hang Xin(Martin)",
-  "dependencies": {
-    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
-    "winston": "^3.2.1"
-  }
+  "dependencies": {}
 }
