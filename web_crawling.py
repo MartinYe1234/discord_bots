@@ -2,18 +2,23 @@
 import requests
 from bs4 import BeautifulSoup
 
-#access page
-page = requests.get("https://en.wikipedia.org/wiki/Nuclear_power")
-soup = BeautifulSoup(page.content,'lxml')
-root1 = "https://en.wikipedia.org/"
+#visit page
+link = "https://www.w3schools.com/html/html_classes.asp"
+page = requests.get(link)
+soup = BeautifulSoup(page.content,'html.parser')
 
-a = soup.find_all('a')
-links = [link.get('href') for link in a]
+#simulate bot --> search is pic we want
+root = "https://www.google.com/search?q="
+search = str(input())
+
+#websites to visit
+to_visit = []
+#images to choose from
+images = []
+
+#access body
+body = soup.body
+print(body.contents)
+a_tags = body.find_all('img')
+links = [link.get('src') for link in a_tags]
 print(links)
-for link in links:
-    root2 = link
-    print(root2)
-    next_page = root1 + root2
-    page2 = requests.get(next_page)
-    soup2 = BeautifulSoup(page2.content, 'lxml')
-    print(next_page)
