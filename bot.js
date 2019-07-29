@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 
-const token = 'NjAwNjg2MDgyMTI3ODIyODQ4.XT8icA.BsxxG7N2VqOT4Lm8gzhytI9WDaw';
+const token = 'NjAwNjg2MDgyMTI3ODIyODQ4.XT8ogA.FJHViv6EiJjnkTlmzAxclb-olds';
 
 const PREFIX = '!';
 
@@ -29,6 +29,13 @@ bot.on('message', msg=>{
             }
             else{
                 var tag = args[1];
+                const embed = new Discord.RichEmbed()
+                .addField('User Name', msg.author.username)
+                .addField('Tag searched:', tag)
+                .setImage('https://miro.medium.com/max/630/1*pKSKQW90N0CyV4K0pXCu9w.jpeg')
+                .setColor('LUMINOUS_VIVID_PINK');
+                msg.channel.send(embed);
+                break;
             }
             break;
 
