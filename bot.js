@@ -1,13 +1,21 @@
 const Discord = require('discord.js');
+
+const auth = require('./auth.json');
+//create bot
 const bot = new Discord.Client();
 
-const token = 'NjAwNjg2MDgyMTI3ODIyODQ4.XT8ogA.FJHViv6EiJjnkTlmzAxclb-olds';
 
 const PREFIX = '!';
 
 bot.on('ready', () =>{
     console.log('this bot is online');
 })
+
+//find an image with the specified tag
+function image_url(tag){
+    pass;
+}
+
 
 //listens for input from user
 bot.on('message', msg=>{
@@ -28,13 +36,20 @@ bot.on('message', msg=>{
                 msg.channel.send('You must specify a tag');
             }
             else{
+                var error_msg = "sorry, I couldn't find any pictures D:";
                 var tag = args[1];
+                var img_url = 'https://miro.medium.com/max/630/1*pKSKQW90N0CyV4K0pXCu9w.jpeg';
+
                 const embed = new Discord.RichEmbed()
+                .addField('Current Server',msg.guild.name)
                 .addField('User Name', msg.author.username)
                 .addField('Tag searched:', tag)
-                .setImage('https://miro.medium.com/max/630/1*pKSKQW90N0CyV4K0pXCu9w.jpeg')
-                .setColor('LUMINOUS_VIVID_PINK');
+                .setImage(img_url)
+                .setColor('LUMINOUS_VIVID_PINK')
+                .setDescription("Image search results");
+                
                 msg.channel.send(embed);
+                
                 break;
             }
             break;
@@ -49,4 +64,4 @@ bot.on('message', msg=>{
     }
 })
 
-bot.login(token);
+bot.login(auth.token);
