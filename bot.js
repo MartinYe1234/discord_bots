@@ -13,19 +13,14 @@ bot.on('ready', () =>{
     console.log('Bot is online!');
 })
 
-//generates url 
-def image_finder(tag){
-    //page to scrape images from
-    var search_url = root_url + tag;
+//collects all images on the website 
+function collect($){
     //store image urls
     var image_urls = [];
-    //access site
-    request(search_url , function(err, res, body){
-        const $ = cheerio.load(body);
-        $('img').each(function(i,image){
-            images[i] = $(image).attr('src');
-        });
-    })
+    //access site 
+    $('img').each(function(i,image){
+        image_urls[i] = $(image).attr('src');
+    });
 }
 
 //listens for input from user
@@ -43,13 +38,21 @@ bot.on('message', msg=>{
             else{
                 var error_msg = "sorry, I couldn't find any pictures D:";
                 var tag = args[1];
-                
+                //page to scrape images from
+                var search_url = root_url + tag;
+                console.log(search_url);
+                //load page
+                request(search_url , function(err, res, body){
+                    const $ = cheerio.load(body);
+                    //collect images
+                    collect($);
+                })
                 //output
                 const embed = new Discord.RichEmbed()
                 .addField('Current Server',msg.guild.name)
                 .addField('User Name', msg.author.username)
                 .addField('Tag searched:', tag)
-                .setImage(tobedecided)
+                .setImage("http://pre09.deviantart.net/83b2/th/pre/i/2014/217/2/5/__kawaii_potato___by_theakatsumi-d7tsf30.png")
                 .setColor('LUMINOUS_VIVID_PINK')
                 .setDescription("Image search results");
                 
