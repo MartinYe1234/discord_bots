@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const auth = require('./auth.json');
-const cheerio = require('cheerio');
-const request = require('request');
+const Scraper = require ('images-scraper')
+const bing = new Scraper.Bing();
 
 //create bot
 const bot = new Discord.Client();
@@ -16,7 +16,7 @@ bot.on('ready', () =>{
 });
 
 //listens for input from user
-bot.on("message" , function(message){
+bot.on('message' , function(message){
     //create array from anything after the PREFIX
     var args = message.content.substring(PREFIX.length).split(" ");
     //the type of command to execute
@@ -25,20 +25,21 @@ bot.on("message" , function(message){
     var parts = args.slice(1).join(" ");
     //different commands that can be executed
     //info command
-    if (action === "info"){
-        message.channel.send('Type !cmds to see all available commands');
+    if (action === 'info'){
+        message.channel.send('This bot can browse bing for images with tags that you specify.');
+        message.channel.send('Type !cmds to see all available commands.');
     }
     //search command
-    else if (action == "search"){
+    else if (action == 'search'){
         if (!args[1]){
             message.channel.send('You must specify a tag');
         }
         else{
-            var error_msg = "sorry, I couldn't find any pictures D:";
+            //get all the tags from the input
             var tags = args.slice(1);
 
-            //find images
-            gen_img(message, tags);
+            //find image
+            gen_img_url(message, tags);
 
             //output some info along with the image
             const embed = new Discord.RichEmbed()
@@ -46,26 +47,26 @@ bot.on("message" , function(message){
             .addField('User Name', message.author.username)
             .addField('Tag(s) searched:', tags)
             .setColor('LUMINOUS_VIVID_PINK')
-            .setDescription("Image search results");
+            .setDescription('Image search result');
             message.channel.send(embed);
         }
     }
     //cmds command
-    else if(action === "cmds"){
-        msg1 = "Type !search <tag> to search an image with the specified tag, to specify multiple tags simple put a space in between tags.";
-        msg2 = "Type !clear <amount> to delete indicated amount of previous messages (the command is not included in the amount)";
+    else if(action === 'cmds'){
+        msg1 = 'Type !search <tag> to search an image with the specified tag, to specify multiple tags simple put a space in between tags.';
+        msg2 = 'Type !clear <amount> to delete indicated amount of previous messages (the command is not included in the amount)';
 
         message.channel.send({embed: {
             color: 3447003,
-            title: "Commands:",
+            title: 'Commands:',
             fields: [
-                { name: "Available Commands", value: (msg1 +"\n\n"+msg2), inline: true}
+                { name: 'Available Commands', value: (msg1 +"\n\n"+msg2), inline: true}
                 ]
             }
         });
     }
     //clear command
-    else if (action === "clear"){
+    else if (action === 'clear'){
         //if no amount is specified
         if(!args[1]){
             return message.reply('please specify how many to clear(an integer under 100).');
@@ -77,40 +78,24 @@ bot.on("message" , function(message){
 
 });
 
-//
-function gen_img(message, tags){
-
-    var options = {
-        url: "https://www.shutterstock.com/search/" + tags,
-        method: "GET",
-        headers: {
-            "Accept": "text/html",
-            "User-Agent": "Chrome"
+//get the image url
+function gen_img_url(message,tags){
+    //return a random image out of the list of images
+    //generates a random index
+    index = Math.floor((Math.random() * 100));
+    //search bing for the image
+    bing.list({
+        keyword: tags,
+        num: 100,
+        detail: false,
+        nightmare: {
+            show: false
         }
-    };
-
-    request(options, function(error, response, body){
-        if (error){
-            message.channel.send("Sorry, the website would not load!");
-            return;
-        }
-        //load the body of the website
-        $ = cheerio.load(body);
-
-        var urls = []
-
-        $('img').each(function(i,image){
-            urls[i] = $(image).attr('src');
-        });
-        //if there are no images
-        if (!urls.length) {
-            message.channel.send("Sorry, couldn't find anything!");
-            return;
-        }
-        //return a random image out of the list of images
-        //generates a random index
-        index = Math.floor((Math.random() * urls.length));
-        //send the image out
-        message.channel.send( urls[index] );
+    })
+    .then(function (result) {
+        message.channel.send(result[index]['url']);
+    }).catch(function(error) {
+        console.log('error: ', error);
+        message.channel.send('Sorry! Something went wrong D:');
     });
 }
