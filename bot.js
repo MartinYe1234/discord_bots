@@ -1,3 +1,4 @@
+// SWEEP TEST
 const Discord = require('discord.js');
 const auth = require('./auth.json');
 const Scraper = require ('images-scraper')
